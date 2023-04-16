@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Scanner</title>
+    <script type="text/javascript" src="script.js"></script> 
+    <link rel="stylesheet" href="pico.min.css" type="text/css">
+    <style>
+      .centerdiv { margin: auto; width: 50%; }
+      .header { padding: 20px; }
+      .main { padding: 20px; }
+      .footer { padding: 20px; }
+      .filter-active{ filter: invert(60%) sepia(77%) saturate(2974%) hue-rotate(82deg) brightness(110%) contrast(132%); }
+      .filter-inactive{ filter: invert(14%) sepia(98%) saturate(6016%) hue-rotate(2deg) brightness(95%) contrast(118%); }
+      .auto-scan-bg-color { background-color: darkgreen; }
+      .btn-alert-bg-color { background-color: darkred; }
+      .control-icon { padding: 15%; }
+      #slides-counter { text-align: center; font-size: 4em; }
+    </style>
+  </head>
+  <body>
+    <header class="container header" style="background-color:grey;">
+      <nav>
+        <ul>
+          <div class="control-icon">
+            <a onclick="btnPowerOff()">
+              <svg id="power-button" class="filter-active" width="32" height="32" viewBox="0 0 16 16">
+                <path d="M7.5 1v7h1V1h-1z"/>
+                <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"/>
+              </svg>
+            </a>
+          </div>
+          <div class="control-icon">
+            <svg id="link-icon" class="filter-inactive" width="32" height="32" viewBox="0 0 16 16">
+              <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+              <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+            </svg>
+          </div>
+        </ul>
+        <ul>
+          <li><h4 id="header-title">Scan</h4></li>
+        </ul>
+        <ul>
+          <li><a id="menu-link" onclick="switchMenu(event)">Config</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="container main">
+      <div id="control">
+        <p id="slides-counter" onclick="clickSlides()">x/y</p>
+        <div class="grid centerdiv">
+          <button id="btn-start-stop" onclick="btnPressed('btnStartStop')">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 16 16">
+              <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
+            </svg>
+          </button>
+          <button onclick="btnPressed('btnLast')">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+            </svg>
+          </button>
+          <button onclick="btnPressed('btnNext')">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+            </svg>
+          </button>
+          <button onclick="btnPressed('btnScan')">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 16 16">
+              <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"/>
+              <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
+            </svg>
+          </button>
+          <button onclick="btnReset()">
+            <svg width="16" height="16" fill="#fff" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+        <dialog id="dialog-slides">
+          <article>
+            <h3>Slides to scan</h3>
+            <p>Slides to scan [1…100]</p>
+            <input id="max-slides" type="number">
+            <footer>
+              <div class="grid">
+                <button class="secondary" onclick="btnSlidesCancel(event)">Cancel</button>
+                <button onclick="btnSlidesSave(event)">Save</button>
+              </div>
+            </footer>
+        </article>
+        </dialog>
+      </div>
+      <div id="config" style="display:none;">
+        <article>
+          <details>
+            <summary>Access Point</summary>
+            <label for="ap-ssid">
+              SSID
+              <input type="text" id="ap-ssid" name="ap-ssid">
+            </label>
+            <label for="ap-pwd">
+              Password
+              <input type="text" id="ap-pwd" name="ap-pwd">
+            </label>
+            <label for="ap-enable">
+              <input type="checkbox" id="ap-enable" name="ap-enable" onchange="wifiModeChanged(this)">
+              Enable WiFi Access Point
+            </label>
+          </details>
+          
+          <details>
+            <summary>Station Mode</summary>
+            <div class="grid">
+              <button onclick="btnFindNetworks()">Find Networks</button>
+              <select id="sta-network" name="sta-network" onchange="staNetworkChanged()">
+                <option value selected>None</option>
+              </select>
+            </div>
+            <label for="sta-ssid">
+              SSID
+              <input type="text" id="sta-ssid" name="sta-ssid">
+            </label>
+              <label for="sta-pwd">
+              Password
+              <input type="text" id="sta-pwd" name="sta-pwd">
+            </label>
+            <label for="sta-enable">
+              <input type="checkbox" id="sta-enable" name="sta-enable" onchange="wifiModeChanged(this)">
+              Enable WiFi Station mode
+            </label>
+          </details>
+          
+          <details>
+            <summary>Scanning</summary>
+            <label for="delay-slide-change">
+              Slide Change Time in [ms]
+              <input type="number" min="1" max="65535" id="delay-slide-change" name="delay-slide-change">
+            </label>
+            <label for="time-slide-change-pulse">
+              Slide Change Pulse Time in [ms]
+              <input type="number" min="1" max="65535" id="time-slide-change-pulse" name="time-slide-change-pulse">
+            </label>
+            <label for="delay-slide-scan">
+              Scan Time in [ms]
+              <input type="number" min="1" max="65535" id="delay-slide-scan" name="delay-slide-scan">
+            </label>
+            <label for="slides-to-scan">
+              Slides to scan (number of slides in magazine)
+              <input type="number" min="1" max="250" id="slides-to-scan" name="slides-to-scan">
+            </label>
+            <label for="cable-selected-code">
+              Selected Cable Release Code
+              <select id="cable-selected-code" name="cable-selected-code">
+              </select>
+            </label>
+            <label for="ir-selected-code">
+              Selected Infrared Release Code
+              <select id="ir-selected-code" name="ir-selected-code">
+              </select>
+            </label>
+          </details>
+
+          <details>
+            <summary>Update</summary>
+            <a href="/update" role="button">Update</a>
+          </details> 
+
+          <div class="grid">
+            <button type="button" onclick="btnSaveConfig()">Save</button>
+            <button type="button" onclick="btnDeleteConfig()">Defaults</button>
+            <button type="button" onclick="btnRestartSystem()" class="btn-alert-bg-color">Reboot</button>
+          </div>
+        </article>
+      </div>
+    </main>
+  <footer class="container footer">
+      <p style="text-align:center;font-size:x-small"><a href="https://filmolino.com">filmolino SlideScanner 2022</a></p>
+  </footer>
+  </body>
+</html>
+

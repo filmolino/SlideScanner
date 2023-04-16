@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "filmolino")(type "KiCad")(uri "${KIPRJMOD}/Libs/filmolino.kicad_sym")(options "")(descr ""))
+)
