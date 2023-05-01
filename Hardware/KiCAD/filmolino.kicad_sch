@@ -2066,6 +2066,11 @@
     (effects (font (size 0.8 0.8)) (justify left bottom))
     (uuid 27a7f403-6729-4117-a5d3-85245c4dab13)
   )
+  (text "https://shop.m5stack.com/products/proto-module-13-2"
+    (at 198.12 158.75 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 3a2b05ee-889a-462b-9341-760c73517d74)
+  )
   (text "HPWR" (at 101.6 193.04 180)
     (effects (font (size 0.8 0.8)) (justify right bottom))
     (uuid 3f20b10b-6840-4749-9d45-5ffaa7ef28f8)
@@ -2153,6 +2158,11 @@
   (text "G34/IIS_IN" (at 114.3 187.96 0)
     (effects (font (size 0.8 0.8)) (justify left bottom))
     (uuid c439b59c-47d7-462b-a46b-c6117e405230)
+  )
+  (text "PCB & Module Specifications\nPCB thickness: 1.0 mm\nLayers: 2\nModul frame: M5Stack Proto Module 13.2"
+    (at 176.53 156.21 0)
+    (effects (font (size 2 2)) (justify left bottom))
+    (uuid d5bfe30d-60e1-464e-99cb-1a8eb08b4868)
   )
   (text "Analog Input\nDigital Output\n+5V Output\nGND" (at 223.52 101.6 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
